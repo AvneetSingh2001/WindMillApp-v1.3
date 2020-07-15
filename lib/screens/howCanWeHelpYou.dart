@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:windmillApp/screens/allgraphtableJSONScreen.dart';
 import '../helpers/curvePainter.dart';
 import '../helpers/colorGradient.dart';
 import 'selectFarm.dart';
@@ -84,7 +85,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AllGraphOutput(),
+                              builder: (context) => AllGraphTableJSON(),
                             ),
                           );
                         } else {

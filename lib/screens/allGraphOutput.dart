@@ -87,7 +87,7 @@ class _AllGraphOutputState extends State<AllGraphOutput> {
                               position: LegendPosition.bottom,
                               overflowMode: LegendItemOverflowMode.wrap,
                               isVisible: true,
-                              textStyle: ChartTextStyle(
+                              textStyle: TextStyle(
                                 fontSize: 12.0,
                               ),
                             ),

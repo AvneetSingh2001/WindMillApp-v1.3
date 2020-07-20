@@ -3,6 +3,7 @@ import '../helpers/curvePainter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'jsonDataScreen.dart';
 import '../helpers/farmDetailsTable.dart';
+import 'predictionJSONloader.dart';
 
 class FarmDetails extends StatefulWidget {
   final int i;
@@ -60,6 +61,76 @@ class _FarmDetailsState extends State<FarmDetails> {
                   Padding(padding: EdgeInsets.only(top: 40.0)),
                   Container(
                     child: Text(
+                      'Power Output',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10.0)),
+                  Container(
+                    padding: EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    height: 320,
+                    width: width,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 5.0, 5.0, 5.0),
+                      child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          padding: EdgeInsets.all(5.0),
+                          width: 2600.0,
+                          child: SfCartesianChart(
+                            tooltipBehavior: TooltipBehavior(
+                              duration: 5000.0,
+                              enable: true,
+                              borderColor: colorPallete[widget.i],
+                              borderWidth: 2,
+                              // TODO:
+                              format:
+                                  'Power Output - point.y Watt\n Date - point.x : Time',
+                            ),
+                            primaryXAxis: CategoryAxis(
+                              title: AxisTitle(
+                                text: 'Date - Time',
+                              ),
+                            ),
+                            primaryYAxis: NumericAxis(
+                              title: AxisTitle(
+                                text: 'Power (per 100 units)',
+                              ),
+                            ),
+                            series: <LineSeries<PredictionJsonData, String>>[
+                              LineSeries<PredictionJsonData, String>(
+                                // enableTooltip: true,
+                                name: "Power Output",
+                                dataSource: getPredictionColumnData(widget.i),
+                                xValueMapper: (PredictionJsonData data, _) =>
+                                    data.x,
+                                yValueMapper: (PredictionJsonData data, _) =>
+                                    data.y,
+                                color: colorPallete[widget.i],
+                                dataLabelSettings:
+                                    DataLabelSettings(isVisible: true),
+                                markerSettings: MarkerSettings(
+                                  isVisible: true,
+                                  // TODO:
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 40.0)),
+                  Container(
+                    child: Text(
                       'Wind Speed',
                       style: TextStyle(
                         fontSize: 18.0,
@@ -76,7 +147,7 @@ class _FarmDetailsState extends State<FarmDetails> {
                     height: 320,
                     width: width,
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+                      padding: EdgeInsets.fromLTRB(0.0, 5.0, 5.0, 5.0),
                       child: SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
@@ -92,8 +163,16 @@ class _FarmDetailsState extends State<FarmDetails> {
                               // TODO:
                               format: 'point.y m/s\n Date - point.x : Time',
                             ),
-                            primaryXAxis: CategoryAxis(),
-                            primaryYAxis: NumericAxis(),
+                            primaryXAxis: CategoryAxis(
+                              title: AxisTitle(
+                                text: 'Date - Time',
+                              ),
+                            ),
+                            primaryYAxis: NumericAxis(
+                              title: AxisTitle(
+                                text: 'Wind',
+                              ),
+                            ),
                             series: <LineSeries<JsonData, String>>[
                               LineSeries<JsonData, String>(
                                 // enableTooltip: true,

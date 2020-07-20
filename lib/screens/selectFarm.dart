@@ -20,23 +20,23 @@ class _SelectFarmState extends State<SelectFarm> {
   ];
 
   navigate() {
-    isLoaded
-        ? Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  DetailsJsonDataScreen(this.currentSelection),
-            ),
-          )
-        : Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => JsonDataScreen(
-                "selectTheWindFarm",
-                this.currentSelection,
-              ),
-            ),
-          );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          if (isLoaded == true && isLoadedPrediction == true) {
+            return DetailsJsonDataScreen(
+                this.currentSelection, "selectTheWindFarm");
+          } else if (isLoaded == false && isLoadedPrediction == true) {
+            return JsonDataScreen(
+                this.currentSelection, "selectTheWindFarm", false);
+          } else if (isLoaded == false && isLoadedPrediction == false) {
+            return JsonDataScreen(
+                this.currentSelection, "selectTheWindFarm", true);
+          }
+        },
+      ),
+    );
   }
 
   @override

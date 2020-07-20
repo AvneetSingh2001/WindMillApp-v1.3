@@ -56,14 +56,19 @@ class _FarmDetailsTableState extends State<FarmDetailsTable> {
             "${value[9]}",
           ),
           customRow(
-            "Temperature (°C)",
+            "Rain Probability",
             "${value[10]}",
             "${value[11]}",
           ),
           customRow(
-            "UV Index (UV)",
+            "Temperature (°C)",
             "${value[12]}",
             "${value[13]}",
+          ),
+          customRow(
+            "UV Index (UV)",
+            "${value[14]}",
+            "${value[15]}",
           ),
         ],
       ),

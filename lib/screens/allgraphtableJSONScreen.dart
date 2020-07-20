@@ -32,7 +32,6 @@ class _AllGraphTableJSONState extends State<AllGraphTableJSON> {
       keyForAllGraphTable.add("$k");
       valueForAllGraphTable.add("$v");
     });
-    print("this -> ${keyForAllGraphTable.length}");
     this.moveToNextScreen();
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:windmillApp/screens/allgraphtableJSONScreen.dart';
+import 'package:windmillApp/screens/predictionJSONloader.dart';
 import '../helpers/curvePainter.dart';
 import '../helpers/colorGradient.dart';
 import 'selectFarm.dart';
@@ -81,7 +82,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                       ),
                       padding: EdgeInsets.all(20.0),
                       onPressed: () {
-                        if (isLoaded) {
+                        if (isLoadedPrediction) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -94,7 +95,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                             MaterialPageRoute(
                               builder: (context) =>
                                   //FIXME: 0 passed just because it is neccessary
-                                  JsonDataScreen("howCanWeHelpYou", 0),
+                                  PredictionJSONloader(0, 'howCanWeHelpYou'),
                             ),
                           );
                         }

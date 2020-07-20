@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../helpers/curvePainter.dart';
 import 'howCanWeHelpYou.dart';
-// import '../helpers/colorGradient.dart';
 
 class SignIn extends StatefulWidget {
   @override

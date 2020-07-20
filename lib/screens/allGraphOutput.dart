@@ -3,9 +3,11 @@ import '../helpers/curvePainter.dart';
 import '../screens/jsonDataScreen.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../helpers/lineSeriesgraphdata.dart';
-import 'graphOutputs.dart';
 import '../helpers/allGraphOutputTable.dart';
 import 'pdfScreen.dart';
+import 'predictionJSONloader.dart';
+import '../helpers/fetchedjsondata.dart';
+import 'graphOutputs.dart';
 
 class AllGraphOutput extends StatefulWidget {
   @override
@@ -91,9 +93,17 @@ class _AllGraphOutputState extends State<AllGraphOutput> {
                                 fontSize: 12.0,
                               ),
                             ),
-                            primaryXAxis: CategoryAxis(),
-                            primaryYAxis: NumericAxis(),
-                            series: <LineSeries<JsonData, String>>[
+                            primaryXAxis: CategoryAxis(
+                              title: AxisTitle(
+                                text: 'Date - Time',
+                              ),
+                            ),
+                            primaryYAxis: NumericAxis(
+                              title: AxisTitle(
+                                text: 'Power (per 100 units)',
+                              ),
+                            ),
+                            series: <LineSeries<PredictionJsonData, String>>[
                               //Multi graph
                               lineSeries("Brahmanvel Farm", 0),
                               lineSeries("Dhalgaon Farm", 1),
@@ -108,10 +118,20 @@ class _AllGraphOutputState extends State<AllGraphOutput> {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => GraphOutputs(),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    if (dateTimePrediction[0].length == 0) {
+                                      return PredictionJSONloader(
+                                        0,
+                                        'howCanWeHelpYou',
+                                      );
+                                    } else {
+                                      return GraphOutputs();
+                                    }
+                                  },
+                                ),
+                              );
                             },
                             child: Text(
                               "Click here to expand",

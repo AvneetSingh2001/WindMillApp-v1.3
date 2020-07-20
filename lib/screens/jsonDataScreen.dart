@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:windmillApp/screens/farmDetails.dart';
+import 'package:windmillApp/screens/predictionJSONloader.dart';
 import 'dart:async';
 import '../helpers/fetchedjsondata.dart';
 import 'detailsJsonDataScreen.dart';
 import 'dart:convert';
-import 'allgraphtableJSONScreen.dart';
 
 class JsonDataScreen extends StatefulWidget {
-  final String requestFrom;
-  final int val;
+  final int i;
+  final String path;
+  final bool bothAreNotLoaded;
   JsonDataScreen(
-    this.requestFrom,
-    this.val,
+    this.i,
+    this.path,
+    this.bothAreNotLoaded,
   );
   @override
   _JsonDataScreenState createState() => _JsonDataScreenState();
@@ -25,8 +28,6 @@ class _JsonDataScreenState extends State<JsonDataScreen> {
     "https://ibm-wind-api.herokuapp.com/data?file=Muppandal/Muppandal_Wind_48hrs",
     "https://ibm-wind-api.herokuapp.com/data?file=Satara/Satara_Wind_48hrs",
   ];
-
-  List<List<String>> finaluserData = new List.generate(noOfFarms, (i) => []);
 
   int i = 0;
 
@@ -43,15 +44,13 @@ class _JsonDataScreenState extends State<JsonDataScreen> {
       );
       var data = json.decode(response.body);
       data.forEach((key, value) {
-        finaluserData[i].add("$key, $value");
         dateTime[i].add("$key");
         values[i].add("$value");
       });
     }
-    print(finaluserData.length);
 
     setState(() {
-      if (finaluserData != null) {
+      if (dateTime != null) {
         isLoaded = true;
         this.moveToGraphOutputs();
         // getColumnData();
@@ -64,10 +63,14 @@ class _JsonDataScreenState extends State<JsonDataScreen> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          if (widget.requestFrom == "howCanWeHelpYou") {
-            return AllGraphTableJSON();
-          } else if (widget.requestFrom == "selectTheWindFarm") {
-            return DetailsJsonDataScreen(widget.val);
+          if (widget.path == "howCanWeHelpYou") {
+            return FarmDetails(widget.i);
+          } else if (widget.path == "selectTheWindFarm") {
+            if (widget.bothAreNotLoaded == true) {
+              return PredictionJSONloader(widget.i, "selectTheWindFarm");
+            } else {
+              return DetailsJsonDataScreen(widget.i, "selectTheWindFarm");
+            }
           }
         },
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../screens/jsonDataScreen.dart';
+import '../screens/predictionJSONloader.dart';
 import '../screens/detailsJsonDataScreen.dart';
 
 class GraphOutputsContainer extends StatefulWidget {
@@ -58,13 +58,22 @@ class _GraphOutputsContainerState extends State<GraphOutputsContainer> {
                     // TODO:
                     format: 'point.y m/s\n Date - point.x : Time',
                   ),
-                  primaryXAxis: CategoryAxis(),
-                  primaryYAxis: NumericAxis(),
-                  series: <LineSeries<JsonData, String>>[
-                    LineSeries<JsonData, String>(
-                      dataSource: getColumnData(widget.i),
-                      xValueMapper: (JsonData data, _) => data.x,
-                      yValueMapper: (JsonData data, _) => data.y,
+                  primaryXAxis: CategoryAxis(
+                    title: AxisTitle(
+                      text: "Date - Time",
+                    ),
+                  ),
+                  primaryYAxis: NumericAxis(
+                    title: AxisTitle(
+                      text: 'Power (per 100 units)',
+                    ),
+                  ),
+                  series: <LineSeries<PredictionJsonData, String>>[
+                    LineSeries<PredictionJsonData, String>(
+                      name: "Power Output",
+                      dataSource: getPredictionColumnData(widget.i),
+                      xValueMapper: (PredictionJsonData data, _) => data.x,
+                      yValueMapper: (PredictionJsonData data, _) => data.y,
                       color: colorPallete[widget.i],
                     ),
                   ],
@@ -76,7 +85,10 @@ class _GraphOutputsContainerState extends State<GraphOutputsContainer> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailsJsonDataScreen(widget.i),
+                          builder: (context) => DetailsJsonDataScreen(
+                            widget.i,
+                            'howCanWeHelpYou',
+                          ),
                         ));
                   },
                   child: Text(

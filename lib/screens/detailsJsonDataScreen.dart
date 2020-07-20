@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:windmillApp/screens/jsonDataScreen.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'farmDetails.dart';
@@ -7,8 +8,10 @@ import '../helpers/fetchedjsondata.dart';
 
 class DetailsJsonDataScreen extends StatefulWidget {
   final int i;
+  final String path;
   DetailsJsonDataScreen(
     this.i,
+    this.path,
   );
   @override
   _DetailsJsonDataScreenState createState() => _DetailsJsonDataScreenState();
@@ -65,7 +68,17 @@ class _DetailsJsonDataScreenState extends State<DetailsJsonDataScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => FarmDetails(widget.i),
+        builder: (context) {
+          if (widget.path == "howCanWeHelpYou") {
+            if (dateTime[0].length == 0) {
+              return JsonDataScreen(widget.i, "howCanWeHelpYou", true);
+            } else {
+              return FarmDetails(widget.i);
+            }
+          } else if (widget.path == "selectTheWindFarm") {
+            return FarmDetails(widget.i);
+          }
+        },
       ),
     );
   }

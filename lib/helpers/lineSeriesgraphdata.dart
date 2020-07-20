@@ -1,6 +1,6 @@
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter/material.dart';
-import '../screens/jsonDataScreen.dart';
+import '../screens/predictionJSONloader.dart';
 
 lineSeries(String name, int i) {
   List<Color> colorPallete = [
@@ -10,11 +10,11 @@ lineSeries(String name, int i) {
     Colors.white,
     Colors.yellow,
   ];
-  return LineSeries<JsonData, String>(
+  return LineSeries<PredictionJsonData, String>(
     name: "$name",
-    dataSource: getColumnData(i),
-    xValueMapper: (JsonData data, _) => data.x,
-    yValueMapper: (JsonData data, _) => data.y,
+    dataSource: getPredictionColumnData(i),
+    xValueMapper: (PredictionJsonData data, _) => data.x,
+    yValueMapper: (PredictionJsonData data, _) => data.y,
     color: colorPallete[i],
   );
 }

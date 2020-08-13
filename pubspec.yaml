@@ -31,6 +31,8 @@ dependencies:
   syncfusion_flutter_charts: ^18.2.45
   http: ^0.12.1
   flutter_plugin_pdf_viewer: ^1.0.7
+  firebase_auth: ^0.16.1
+  fluttertoast: ^7.0.2
 
 dev_dependencies:
   flutter_test:

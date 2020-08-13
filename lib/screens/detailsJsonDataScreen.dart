@@ -19,11 +19,11 @@ class DetailsJsonDataScreen extends StatefulWidget {
 
 class _DetailsJsonDataScreenState extends State<DetailsJsonDataScreen> {
   final List<String> url = [
-    "http://flask-api.apic.eu-gb.mybluemix.net/data?file=Brahmanvel/Brahmanvel_Features_2_days",
-    "http://flask-api.apic.eu-gb.mybluemix.net/data?file=Dhalgaon/Dhalgaon_Features_2_days",
-    "http://flask-api.apic.eu-gb.mybluemix.net/data?file=Jaisalmer/Jaisalmer_Features_2_days",
-    "http://flask-api.apic.eu-gb.mybluemix.net/data?file=Muppandal/Muppandal_Features_2_days",
-    "http://flask-api.apic.eu-gb.mybluemix.net/data?file=Satara/Satara_Features_2_days",
+    "https://ibm-wind-api.herokuapp.com/data?file=Brahmanvel/Brahmanvel_Features_2_days",
+    "https://ibm-wind-api.herokuapp.com/data?file=Dhalgaon/Dhalgaon_Features_2_days",
+    "https://ibm-wind-api.herokuapp.com/data?file=Jaisalmer/Jaisalmer_Features_2_days",
+    "https://ibm-wind-api.herokuapp.com/data?file=Muppandal/Muppandal_Features_2_days",
+    "https://ibm-wind-api.herokuapp.com/data?file=Satara/Satara_Features_2_days",
   ];
 
   @override

@@ -1,79 +1,47 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../helpers/curvePainter.dart';
-import 'howCanWeHelpYou.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'signUp.dart';
+import 'package:windmillApp/helpers/curvePainter.dart';
+import 'package:windmillApp/screens/howCanWeHelpYou.dart';
+import 'package:windmillApp/screens/signIn.dart';
 
-class SignIn extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _SignInState createState() => _SignInState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email, _password;
-  bool _success, isLoading = false;
-  bool empty = true, isValidated;
+  String _email = "", _password = "";
+  bool empty = true;
   int userLen = 0, passLen = 0;
+  bool isLoading = false, isValidated;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser user;
+  FirebaseUser _user;
 
-  void _signInWithEmailAndPassword() async {
-    try {
-      user = (await _auth.signInWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      ))
-          .user;
-
-      if (user != null) {
-        setState(() {
-          _success = true;
-        });
-      } else {
-        setState(() {
-          _success = false;
-        });
-      }
-    } catch (e) {
-      _success = false;
-    }
-    if (user != null && user.isEmailVerified == false) {
-      _success = false;
-      showToastNotVerified();
-    } else {
+  isEmailVerified() async {
+    _user.reload();
+    FirebaseUser user = await _auth.currentUser();
+    print(user.isEmailVerified);
+    if (user.isEmailVerified == true) {
       showToast();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HowCanWeHelpYou(),
+        ),
+      );
+    } else {
+      showNotVerifyMessage();
     }
-
-    if (_success == false) {
-      setState(() {
-        this.isLoading = false;
-      });
-    }
-
-    if (_success == true) {
-      navigateToMainScreen();
-    }
-  }
-
-  showToastNotVerified() {
-    Fluttertoast.showToast(
-        msg: "Email not verified",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.grey,
-        timeInSecForIosWeb: 2,
-        textColor: Colors.white,
-        fontSize: 16.0);
   }
 
   showToast() {
     Fluttertoast.showToast(
-        msg: _success
-            ? "$_email signed in successfully"
-            : "User not found, try signing up",
+        msg: "$_email signed in successfully",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.grey,
@@ -82,11 +50,137 @@ class _SignInState extends State<SignIn> {
         fontSize: 16.0);
   }
 
-  navigateToMainScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HowCanWeHelpYou(),
+  createUser() async {
+    try {
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
+      _user = result.user;
+      sendMailVerification();
+    } catch (e) {
+      showError(e.message);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  sendMailVerification() async {
+    try {
+      _user.sendEmailVerification();
+      showVerifyMessage();
+    } catch (e) {
+      showError(e.message);
+    }
+  }
+
+  showNotVerifyMessage() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => WillPopScope(
+        onWillPop: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignIn(),
+            ),
+          );
+        },
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            "Email not verified",
+            style: TextStyle(
+              color: Colors.red,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            "Try again, we have send you a verification email on $_email, Click verify when done",
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                isEmailVerified();
+              },
+              child: Text("Verify"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  showVerifyMessage() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => WillPopScope(
+        onWillPop: () {
+          Navigator.pop(context);
+          isEmailVerified();
+        },
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            "Verify your Email",
+            style: TextStyle(
+              color: Colors.red,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            "We have send you a verification email on $_email, Click verify when done",
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+                isEmailVerified();
+              },
+              child: Text("Verify"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        title: Text(
+          "Error",
+          style: TextStyle(
+            color: Colors.red,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          errorMessage,
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("OK"),
+          ),
+        ],
       ),
     );
   }
@@ -126,40 +220,37 @@ class _SignInState extends State<SignIn> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(top: 5.0),
                       // LOGIN ICONBUTTON
-                      child: GestureDetector(
-                        child: isLoading
-                            ? Container(
-                                height: 70.0,
-                                width: 70.0,
-                                child: CupertinoActivityIndicator(
-                                  radius: 20.0,
-                                ),
-                              )
-                            : Icon(
+                      child: isLoading
+                          ? Container(
+                              height: 70.0,
+                              width: 70.0,
+                              child: CupertinoActivityIndicator(
+                                radius: 20.0,
+                              ),
+                            )
+                          : GestureDetector(
+                              child: Icon(
                                 Icons.arrow_forward,
                                 size: 70.0,
                                 color: empty ? Colors.white : Colors.cyan,
                               ),
-                        // TODO: Navigate to date and month specific
-                        onTap: () {
-                          validator();
-
-                          if (isValidated) {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            _signInWithEmailAndPassword();
-                          }
-                        },
-                      ),
+                              onTap: () {
+                                validator();
+                                if (isValidated) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  createUser();
+                                }
+                              },
+                            ),
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 20.0),
                       alignment: Alignment.center,
                       child: Text(
-                        "LOGIN",
+                        "SIGN UP",
                         style: TextStyle(
                           color: Colors.cyan[200],
                           fontSize: 35.0,
@@ -267,12 +358,6 @@ class _SignInState extends State<SignIn> {
                             ),
                             borderRadius: BorderRadius.circular(15.0),
                           ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Colors.white,
@@ -280,6 +365,12 @@ class _SignInState extends State<SignIn> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Colors.white,
                             ),
@@ -299,22 +390,10 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 0.0),
-                      // child: Text(
-                      //   "There is Weather and there is buisness Weather",
-                      //   style: TextStyle(
-                      //     fontSize: 20.0,
-                      //     foreground: Paint()..shader = linearGradient,
-                      //   ),
-                      //   textScaleFactor: 1.5,
-                      // ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 10.0),
+                      margin: EdgeInsets.fromLTRB(10.0, 80.0, 5.0, 0.0),
                       alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(top: 50.0),
                       child: Text(
-                        "WANT TO JOIN?",
+                        "ALREADY A MEMBER?",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 35.0,
@@ -330,10 +409,10 @@ class _SignInState extends State<SignIn> {
                         color: Colors.cyan[200],
                         //TODO: ONPRESSED MOVE TO NEXT PAGE
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUp(),
+                              builder: (context) => SignIn(),
                             ),
                           );
                         },

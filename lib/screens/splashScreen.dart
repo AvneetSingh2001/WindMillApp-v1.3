@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'signIn.dart';
+import 'package:windmillApp/screens/howCanWeHelpYou.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => SignIn(),
+              builder: (context) => HowCanWeHelpYou(),
             ));
       },
     );

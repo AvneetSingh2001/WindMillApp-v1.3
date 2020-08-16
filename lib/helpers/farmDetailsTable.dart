@@ -20,12 +20,12 @@ class _FarmDetailsTableState extends State<FarmDetailsTable> {
           DataColumn(label: Text('')),
           DataColumn(
               label: Text(
-            'Today',
+            'Next\n24 hrs',
             style: TextStyle(color: Colors.cyan, fontSize: 15.0),
           )),
           DataColumn(
               label: Text(
-            'Tommorow',
+            'Next\n48 hrs',
             style: TextStyle(color: Colors.cyan, fontSize: 15.0),
           )),
         ],
@@ -56,7 +56,7 @@ class _FarmDetailsTableState extends State<FarmDetailsTable> {
             "${value[9]}",
           ),
           customRow(
-            "Rain Probability",
+            "Rain Probability (%)",
             "${value[10]}",
             "${value[11]}",
           ),

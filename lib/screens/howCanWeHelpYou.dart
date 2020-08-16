@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:windmillApp/screens/aboutUsScreen.dart';
 import 'package:windmillApp/screens/allgraphtableJSONScreen.dart';
 import 'package:windmillApp/screens/predictionJSONloader.dart';
 import 'package:windmillApp/screens/signIn.dart';
+import 'package:windmillApp/screens/whyWeCreatedThisApp.dart';
 import '../helpers/curvePainter.dart';
 import '../helpers/colorGradient.dart';
 import 'selectFarm.dart';
@@ -54,14 +56,64 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
           size: Size.infinite,
         ),
         Scaffold(
+          appBar: AppBar(
+            iconTheme: new IconThemeData(color: Colors.black),
+            backgroundColor: Colors.white,
+            elevation: 0.0,
+          ),
+          drawer: Theme(
+            data: ThemeData.light(),
+            child: Drawer(
+              child: ListView(
+                children: [
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Why we created this App?",
+                      style: TextStyle(),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WhyWeCreatedThisApp(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text(
+                      "About the Team",
+                      style: TextStyle(),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AboutUs(),
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ),
+          ),
           backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
           body: Center(
             child: Container(
-              margin: EdgeInsets.only(top: height / 4.8),
+              margin: EdgeInsets.only(top: height / 4.5),
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: <Widget>[
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
                     Container(
                       child: Text(
                         "How can we help you ?",
@@ -73,7 +125,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 60.0)),
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
                     Container(
                       padding: EdgeInsets.all(20.0),
                       width: width,
@@ -99,7 +151,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                         color: Colors.cyan[300],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.0)),
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
                     Container(
                       padding: EdgeInsets.all(20.0),
                       width: width,
@@ -136,7 +188,7 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                         color: Colors.cyan[300],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.0)),
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
                     Container(
                       padding: EdgeInsets.all(20.0),
                       width: width,
@@ -163,24 +215,26 @@ class _HowCanWeHelpYouState extends State<HowCanWeHelpYou> {
                         color: Colors.cyan[300],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.0)),
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      width: width,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        color: Colors.red,
+                        onPressed: () {
+                          this._auth.signOut();
+                        },
+                        child: Text("Sign Out"),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 20.0)),
                   ],
                 ),
               ),
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.cyan[300],
-            child: Text(
-              "Sign Out",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () {
-              _auth.signOut();
-            },
           ),
         ),
       ],

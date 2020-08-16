@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../helpers/curvePainter.dart';
-import '../screens/jsonDataScreen.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../helpers/lineSeriesgraphdata.dart';
 import '../helpers/allGraphOutputTable.dart';

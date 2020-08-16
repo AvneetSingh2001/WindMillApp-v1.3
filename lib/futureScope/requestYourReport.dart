@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:windmillApp/screens/signIn.dart';
 import '../helpers/curvePainter.dart';
 import 'formSubmittedScreen.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'formData.dart';
 
 class RequestYourReportScreen extends StatefulWidget {
   @override
@@ -11,10 +15,51 @@ class RequestYourReportScreen extends StatefulWidget {
 
 class _RequestYourReportScreenState extends State<RequestYourReportScreen> {
   GlobalKey<FormState> _key = new GlobalKey();
+  String email, state, city, numberOfWindmills, radius, powerCoefficient;
+  bool isValidated;
+  final databaseReference = FirebaseDatabase.instance.reference();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+    checkAuthentication();
+  }
+
+  getUser() async {
+    user = await FirebaseAuth.instance.currentUser();
+  }
+
+  checkAuthentication() async {
+    _auth.onAuthStateChanged.listen((user) async {
+      if (user == null || user.isEmailVerified == false) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignIn(),
+          ),
+        );
+      }
+    });
+  }
+
+  uploadData() async {
+    print(user.email);
+    FormData data = FormData(this.email, this.state, this.city,
+        this.numberOfWindmills, this.radius, this.powerCoefficient);
+    await databaseReference.child("${user.uid}").set(data.toJson());
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FormSubmittedScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    String email, state, city, numberOfWindmills, radius, powerCoefficient;
     var height = MediaQuery.of(context).size.height;
     return Stack(
       children: <Widget>[
@@ -200,7 +245,10 @@ class _RequestYourReportScreenState extends State<RequestYourReportScreen> {
                         ),
                       ),
                       onPressed: () {
-                        _sendToNextScreen();
+                        _validate();
+                        if (isValidated = true) {
+                          uploadData();
+                        }
                       },
                     ),
                     Padding(padding: EdgeInsets.only(top: 30.0)),
@@ -214,15 +262,13 @@ class _RequestYourReportScreenState extends State<RequestYourReportScreen> {
     );
   }
 
-  _sendToNextScreen() {
+  _validate() {
     if (_key.currentState.validate()) {
       _key.currentState.save();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FormSubmittedScreen(),
-        ),
-      );
+      isValidated = true;
+      print('hihiiiiiiiiiiiiiiiiiii');
+    } else {
+      isValidated = false;
     }
   }
 }

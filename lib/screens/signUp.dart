@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +13,9 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email = "", _password = "";
+  String _email = "", _password = "", _name = "";
   bool empty = true;
-  int userLen = 0, passLen = 0;
+  int userLen = 0, passLen = 0, nameLen;
   bool isLoading = false, isValidated;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user;
@@ -57,6 +55,12 @@ class _SignUpState extends State<SignUp> {
         password: _password,
       );
       _user = result.user;
+      if (_user != null) {
+        UserUpdateInfo updateUser = UserUpdateInfo();
+        updateUser.displayName = _name;
+
+        _user.updateProfile(updateUser);
+      }
       sendMailVerification();
     } catch (e) {
       showError(e.message);
@@ -186,7 +190,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   loginArrowColorChanger() {
-    if (this.userLen != 0 && this.passLen != 0) {
+    if (this.userLen != 0 && this.passLen != 0 && this.nameLen != 0) {
       setState(() {
         this.empty = false;
       });
@@ -267,6 +271,71 @@ class _SignUpState extends State<SignUp> {
                       child: TextFormField(
                         validator: (value) {
                           if (value.isEmpty == true) {
+                            return "Enter name";
+                          }
+                        },
+                        onChanged: (val) {
+                          setState(() {
+                            this.nameLen = val.length;
+                            loginArrowColorChanger();
+                          });
+                        },
+                        onSaved: (val) {
+                          val = val.trimRight();
+                          _name = val;
+                        },
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.cyan[200],
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          labelText: "NAME",
+                          labelStyle: TextStyle(
+                            color: Colors.white,
+                          ),
+                          hintText: "Enter your name",
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 23.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(12.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty == true) {
                             return "Enter email";
                           }
                         },
@@ -285,7 +354,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                         decoration: InputDecoration(
                           prefixIcon: Icon(
-                            Icons.person,
+                            Icons.mail,
                             color: Colors.white,
                           ),
                           focusedBorder: OutlineInputBorder(
